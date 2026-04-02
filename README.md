@@ -137,4 +137,4 @@ The endpoint will return a JSON response with image metadata or an error.
 
 ## License
 
-MIT
+AGPL-3.0
