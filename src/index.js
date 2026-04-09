@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
+const fs = require('fs');
 
 const app = express();
 app.use(express.json());
@@ -40,8 +41,17 @@ async function verifyToken(authHeader) {
 }
 
 async function callFalApi(payload) {
-  const falKey = process.env.FAL_KEY;
-  
+  // Prefer Docker secret file if present, fall back to env var
+  const secretPath = process.env.FAL_KEY_FILE || '/run/secrets/fal_key';
+  let falKey = process.env.FAL_KEY || null;
+  try {
+    if (fs.existsSync(secretPath)) {
+      falKey = fs.readFileSync(secretPath, 'utf8').trim();
+    }
+  } catch (err) {
+    // ignore and fall back to env
+  }
+
   if (!falKey) {
     throw new Error('FAL_KEY not configured');
   }

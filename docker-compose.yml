@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    secrets:
+      - fal_key
+    environment:
+      - PORT=8080
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
+    restart: unless-stopped
+
+secrets:
+  fal_key:
+    file: ./secrets/fal_key
